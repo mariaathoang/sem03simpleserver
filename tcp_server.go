@@ -6,6 +6,9 @@ import (
 	"net"
 	"sync"
 	"github.com/mariaathoang/is105sem03/mycrypt"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 func main() {
@@ -38,13 +41,39 @@ func main() {
 						return // fra for løkke
 					}
 					dekryptertMelding := mycrypt.Krypter([]rune(string(buf[:n])), mycrypt.ALF_SEM03, len(mycrypt.ALF_SEM03)-4)
-					log.Println("Dekrypter melding: ", string(dekryptertMelding))
-					switch msg := string(dekryptertMelding); msg {
+					log.Println("Dekryptert melding: ", string(dekryptertMelding))
+					kryptertMelding := mycrypt.Krypter([]rune(string(dekryptertMelding)), mycrypt.ALF_SEM03, 4)
+					log.Println("Kryptert melding: ", string(kryptertMelding))
+					/*switch msg := string(dekryptertMelding); msg {
   				        case "ping":
 						_, err = c.Write([]byte("pong"))
+					case strings.HasPrefix(msg, "Kjevik"):
+						celsius, err := strconv.ParseFloat(msg[6:], 64)
+						if err != nil {
+							log.Println(err)
+							return
+						}
+						fahrenheit := (celsius * 1.8) + 32
+						response := fmt.Sprintf("Temperature in Fahrenheit is: %.2f", fahrenheit)
+						_, err = c.Write([]byte(response))
 					default:
-						_, err = c.Write(buf[:n])
-					}
+                                                _, err = c.Write([]byte(string(kryptertMelding)))
+					}*/
+				msg := string(dekryptertMelding)
+				if msg == "ping" {
+                                                _, err = c.Write([]byte("pong"))
+                                        } else if strings.HasPrefix(msg, "Kjevik") {
+                                                celsius, err := strconv.ParseFloat(msg[6:], 64)
+                                                if err != nil {
+                                                        log.Println(err)
+                                                        return
+                                                }
+                                                fahrenheit := (celsius * 1.8) + 32
+                                                response := fmt.Sprintf("Temperature in Fahrenheit is: %.2f", fahrenheit)
+                                                _, err = c.Write([]byte(response))
+                                        } else {
+                                                _, err = c.Write([]byte(string(kryptertMelding)))
+                                        }
 					if err != nil {
 						if err != io.EOF {
 							log.Println(err)
