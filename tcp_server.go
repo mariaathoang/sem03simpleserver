@@ -63,9 +63,10 @@ func main() {
 				if msg == "ping" {
                                                 _, err = c.Write([]byte("pong"))
                                         } else if strings.HasPrefix(msg, "Kjevik") {
-                                                celsius, err := strconv.ParseFloat(msg[6:], 64)
+                                                celsius, err := strconv.ParseFloat(msg[len(msg)-1:], 64)
                                                 if err != nil {
                                                         log.Println(err)
+							fmt.Println("Test")
                                                         return
                                                 }
                                                 fahrenheit := (celsius * 1.8) + 32
